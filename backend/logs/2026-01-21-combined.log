@@ -1,0 +1,11 @@
+{"level":"info","message":"Server booting in development mode","timestamp":"2026-01-21 18:23:21"}
+{"level":"info","message":"Server booting in development mode","timestamp":"2026-01-21 18:23:40"}
+{"durationMs":1140,"ip":"::1","level":"info","message":"HTTP Request","method":"GET","statusCode":304,"timestamp":"2026-01-21 18:37:07","url":"/api/stripe/connect/status","userId":"6964e16e058c4379c161c247"}
+{"durationMs":15,"ip":"::1","level":"info","message":"HTTP Request","method":"GET","statusCode":304,"timestamp":"2026-01-21 18:37:07","url":"/api/admin/vehicle-types","userId":"guest"}
+{"durationMs":6,"ip":"::1","level":"info","message":"HTTP Request","method":"GET","statusCode":304,"timestamp":"2026-01-21 18:37:07","url":"/uploads/vehicle-types/vehicle-type-1768219528392.jpg","userId":"guest"}
+{"durationMs":10,"ip":"::1","level":"info","message":"HTTP Request","method":"GET","statusCode":304,"timestamp":"2026-01-21 18:37:07","url":"/uploads/vehicle-types/vehicle-type-1768219600468.jpg","userId":"guest"}
+{"durationMs":17,"ip":"::1","level":"info","message":"HTTP Request","method":"GET","statusCode":304,"timestamp":"2026-01-21 18:37:07","url":"/uploads/vehicle-types/vehicle-type-1768308899496.jpg","userId":"guest"}
+{"durationMs":19,"ip":"::1","level":"info","message":"HTTP Request","method":"GET","statusCode":304,"timestamp":"2026-01-21 18:37:07","url":"/uploads/vehicle-types/vehicle-type-1768309158847.jpg","userId":"guest"}
+{"durationMs":71,"ip":"::1","level":"info","message":"HTTP Request","method":"GET","statusCode":304,"timestamp":"2026-01-21 18:37:07","url":"/api/vehicles/approved/types","userId":"6964e16e058c4379c161c247"}
+{"durationMs":83,"ip":"::1","level":"info","message":"HTTP Request","method":"GET","statusCode":304,"timestamp":"2026-01-21 18:37:07","url":"/api/vehicles/approved","userId":"6964e16e058c4379c161c247"}
+{"durationMs":1000,"ip":"::1","level":"info","message":"HTTP Request","method":"GET","statusCode":304,"timestamp":"2026-01-21 18:37:08","url":"/api/stripe/connect/status","userId":"6964e16e058c4379c161c247"}

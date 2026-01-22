@@ -1,0 +1,56 @@
+import { Calendar, MapPin, User, Car } from "lucide-react";
+
+function BookingSummary({ data }) {
+  const { ride, driver, vehicle, booking } = data;
+
+  return (
+    <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
+      <div className="flex justify-between space-y-4">
+        <div>
+          <div className="flex items-center gap-2 text-gray-600">
+            <Calendar size={18} />
+            <span>
+              {new Date(ride.startTime).toLocaleDateString()} •{" "}
+              {new Date(ride.startTime).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </span>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <MapPin className="text-gray-400 mt-1" size={18} />
+            <div>
+              <div className="font-medium">
+                {ride.from.label} → {ride.to.label}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 text-sm text-gray-600">
+            <User size={16} />
+            {driver.name} ({driver.ratingAvg.toFixed(1)}★)
+          </div>
+
+          <div className="flex items-center gap-3 text-sm text-gray-600">
+            <Car size={16} />
+            {vehicle.brand} {vehicle.model}
+          </div>
+
+          <div className="text-sm font-medium">
+            Total paid: ₹{booking.totalAmount}
+          </div>
+        </div>
+        <div
+          className={`mt-1 text-xs font-semibold ${
+            booking.status === "cancelled" ? "text-red-500" : "text-green-600"
+          }`}
+        >
+          {booking.status.toUpperCase()}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default BookingSummary;
