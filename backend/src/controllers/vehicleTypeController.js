@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import VehicleType from "../models/VehicleType.js";
+import uploadToBlob from "../utils/uploadToBlob.js";
 
 /**
  * GET /api/admin/vehicle-types
@@ -32,7 +33,7 @@ export const createVehicleType = async (req, res) => {
     }
 
     const imageUrl = req.file
-      ? `/uploads/vehicle-types/${req.file.filename}`
+      ? await uploadToBlob(req.file, "vehicle-types")
       : null;
 
     const vehicleType = await VehicleType.create({
@@ -66,16 +67,22 @@ export const updateVehicleType = async (req, res) => {
     }
 
     // If new image uploaded → delete old image
+    // if (req.file) {
+    //   if (vehicleType.imageUrl) {
+    //     const oldPath = path.join(process.cwd(), vehicleType.imageUrl);
+
+    //     if (fs.existsSync(oldPath)) {
+    //       fs.unlinkSync(oldPath);
+    //     }
+    //   }
+
+    //   vehicleType.imageUrl = `/uploads/vehicle-types/${req.file.filename}`;
+    // }
+
     if (req.file) {
-      if (vehicleType.imageUrl) {
-        const oldPath = path.join(process.cwd(), vehicleType.imageUrl);
+      const newImageUrl = await uploadToBlob(req.file, "vehicle-types");
 
-        if (fs.existsSync(oldPath)) {
-          fs.unlinkSync(oldPath);
-        }
-      }
-
-      vehicleType.imageUrl = `/uploads/vehicle-types/${req.file.filename}`;
+      vehicleType.imageUrl = newImageUrl;
     }
 
     if (displayName !== undefined) vehicleType.displayName = displayName;

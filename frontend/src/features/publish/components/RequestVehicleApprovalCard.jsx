@@ -34,7 +34,7 @@ function RequestVehicleApprovalCard({ approvedTypes }) {
             >
               {type.imageUrl && (
                 <img
-                  src={"http://localhost:5000" + type.imageUrl}
+                  src={type.imageUrl}
                   alt={type.displayName}
                   className="h-16 mx-auto mb-2 object-contain"
                 />

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchRideDetails } from "@/features/rides/services/rideDetailsApi";
 import RideSummary from "@/features/rides/components/RideSummary";
 import SeatAvailability from "@/features/rides/components/SeatAvailability";
+import MessageDriverButton from "@/features/chat/components/MessageDriverButton";
 
 function RideDetails() {
   const { rideId } = useParams();
@@ -23,6 +24,7 @@ function RideDetails() {
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         <RideSummary ride={data} />
         <SeatAvailability ride={data} />
+        <MessageDriverButton rideId={rideId} driverId={data.driverId} />
       </div>
     </div>
   );

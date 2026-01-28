@@ -7,6 +7,7 @@ import {
   updateVehicleType,
 } from "../../controllers/vehicleTypeController.js";
 import uploadVehicleTypeImage from "../../middlewares/vehicleTypeUpload.js";
+import uploadMiddleware from "../../middlewares/uploadMiddleware.js";
 
 const router = express.Router();
 
@@ -15,14 +16,14 @@ router.post(
   "/vehicle-types",
   protect,
   authorizeRoles("admin"),
-  uploadVehicleTypeImage,
+  uploadMiddleware,
   createVehicleType
 );
 router.put(
   "/vehicle-types/:id",
   protect,
   authorizeRoles("admin"),
-  uploadVehicleTypeImage,
+  uploadMiddleware,
   updateVehicleType
 );
 

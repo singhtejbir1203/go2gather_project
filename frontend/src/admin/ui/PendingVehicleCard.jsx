@@ -35,7 +35,7 @@ function PendingVehicleCard({
 
         {licenseFile && (
           <a
-            href={"http://localhost:5000" + licenseFile}
+            href={licenseFile}
             target="_blank"
             rel="noreferrer"
             className="text-primary flex items-center gap-1 text-sm"

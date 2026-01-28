@@ -2,6 +2,7 @@ import UserVehicle from "../models/UserVehicle.js";
 import VehicleBrand from "../models/VehicleBrand.js";
 import VehicleModel from "../models/VehicleModel.js";
 import { logDbOperation } from "../utils/dbLogger.js";
+import uploadToBlob from "../utils/uploadToBlob.js";
 
 export const requestVehicleApproval = async (req, res) => {
   try {
@@ -48,11 +49,16 @@ export const requestVehicleApproval = async (req, res) => {
       throw err;
     }
 
+    const licenseUrl = await uploadToBlob(
+      req.file,
+      "vehicle-licenses"
+    );
+
     const vehicle = await UserVehicle.create({
       userId: req.user._id,
       modelId,
       plateNumber,
-      licenseFile: `/uploads/vehicle-licenses/${req.file.filename}`,
+      licenseFile: licenseUrl,
       approvalStatus: "pending",
       isActive: false,
     });

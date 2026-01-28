@@ -18,6 +18,7 @@ import StripeOnboardingSuccess from "@/pages/StripeOnboardingSuccess";
 import MyRides from "@/pages/MyRides";
 import MyRideDetails from "@/pages/MyRideDetails";
 import MyPublicationDetails from "@/features/rides/pages/MyPublicationDetails";
+import ChatPage from "@/features/chat/pages/ChatPage";
 
 function AppRoutes() {
   return (
@@ -157,6 +158,16 @@ function AppRoutes() {
             <ProtectedRoute>
               <MainLayout>
                 <MyPublicationDetails />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/chat/:conversationId"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <ChatPage />
               </MainLayout>
             </ProtectedRoute>
           }

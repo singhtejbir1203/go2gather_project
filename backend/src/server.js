@@ -14,6 +14,7 @@ import adminIndexRoutes from "./routes/admin/index.js";
 import { stripeWebhook } from "./controllers/stripeWebhookController.js";
 import requestLogger from "./middlewares/requestLogger.js";
 import errorHandler from "./middlewares/errorHandler.js";
+import chatRoutes from "./routes/chatRoutes.js";
 
 dotenv.config();
 
@@ -49,6 +50,8 @@ app.use("/api/admin", adminIndexRoutes);
 app.use("/api/bookings", bookingRoutes);
 
 app.use("/api/stripe", stripeConnectRoutes);
+
+app.use("/api/chat", chatRoutes);
 
 app.use(errorHandler);
 

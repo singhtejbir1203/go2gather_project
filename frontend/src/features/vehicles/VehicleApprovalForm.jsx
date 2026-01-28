@@ -88,7 +88,7 @@ function VehicleApprovalForm({ vehicleTypeId }) {
 
       <Input name="plateNumber" placeholder="Plate Number" required />
       <p className="font-semibold">Upload License</p>
-      <Input name="license" type="file" accept="image/*,.pdf" required />
+      <Input name="image" type="file" accept="image/*,.pdf" required />
 
       <Button type="submit" disabled={mutation.isLoading}>
         Submit for Approval

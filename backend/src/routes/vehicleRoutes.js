@@ -6,13 +6,14 @@ import {
   getApprovedVehicleTypes,
   requestVehicleApproval,
 } from "../controllers/userVehicleController.js";
+import uploadMiddleware from "../middlewares/uploadMiddleware.js";
 
 const router = express.Router();
 
 router.post(
   "/request-approval",
   protect,
-  uploadVehicleLicense,
+  uploadMiddleware,
   requestVehicleApproval
 );
 

@@ -45,7 +45,7 @@ function VehicleTypeTable({ vehicleTypes }) {
               <TableCell>
                 {type.imageUrl && (
                   <img
-                    src={"http://localhost:5000" + type.imageUrl}
+                    src={type.imageUrl}
                     alt={type.displayName}
                     className="h-10 w-10 rounded object-cover"
                   />
