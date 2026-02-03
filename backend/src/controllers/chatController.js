@@ -1,34 +1,40 @@
 import Conversation from "../models/Conversation.js";
-import Ride from "../models/Ride.js";
+import User from "../models/User.js";
 import Message from "../models/Message.js";
 
 export const getOrCreateConversation = async (req, res) => {
   try {
-    const { rideId } = req.body;
+    const { userId, relatedRideId = null } = req.body;
 
-    const ride = await Ride.findById(rideId);
-    if (!ride) {
-      const err = new Error("Ride not found");
-      err.statusCode = 404;
-      throw err;
-    }
-
-    if (ride.driverId.toString() === req.user._id.toString()) {
-      const err = new Error("You cannot chat with yourself");
+    if (!userId) {
+      const err = new Error("Target userId is required");
       err.statusCode = 400;
       throw err;
     }
 
+    if (userId === req.user._id.toString()) {
+      const err = new Error("Cannot start chat with yourself");
+      err.statusCode = 400;
+      throw err;
+    }
+
+    const targetUser = await User.findById(userId);
+    if (!targetUser) {
+      const err = new Error("User not found");
+      err.statusCode = 404;
+      throw err;
+    }
+
     let conversation = await Conversation.findOne({
-      rideId,
-      passengerId: req.user._id,
+      participants: {
+        $all: [req.user._id, userId],
+      },
     });
 
     if (!conversation) {
       conversation = await Conversation.create({
-        rideId,
-        driverId: ride.driverId,
-        passengerId: req.user._id,
+        participants: [req.user._id, userId],
+        relatedRideId,
       });
     }
 
@@ -44,32 +50,21 @@ export const sendMessage = async (req, res) => {
     const { conversationId, text } = req.body;
 
     if (!text?.trim()) {
-      const err = new Error("Message cannot be empty");
+      const err = new Error("Message text required");
       err.statusCode = 400;
       throw err;
     }
 
     const conversation = await Conversation.findById(conversationId);
-    if (!conversation) {
-      const err = new Error("Conversation not found");
-      err.statusCode = 404;
-      throw err;
-    }
-
-    const isParticipant =
-      conversation.driverId.toString() === req.user._id.toString() ||
-      conversation.passengerId.toString() === req.user._id.toString();
-
-    if (!isParticipant) {
-      const err = new Error("Not authorized to send message");
+    if (!conversation || !conversation.participants.includes(req.user._id)) {
+      const err = new Error("Conversation not accessible");
       err.statusCode = 403;
       throw err;
     }
 
-    const receiverId =
-      conversation.driverId.toString() === req.user._id.toString()
-        ? conversation.passengerId
-        : conversation.driverId;
+    const receiverId = conversation.participants.find(
+      (id) => id.toString() !== req.user._id.toString(),
+    );
 
     const message = await Message.create({
       conversationId,
@@ -89,53 +84,110 @@ export const sendMessage = async (req, res) => {
   }
 };
 
+// export const getMyConversations = async (req, res) => {
+//   try {
+//     const conversations = await Conversation.find({
+//       participants: req.user._id,
+//     })
+//       .sort({ lastMessageAt: -1 })
+//       .populate("participants", "name email")
+//       .populate("relatedRideId", "from to startTime");
+
+//     res.json(conversations);
+//   } catch (err) {
+//     err.statusCode = 500;
+//     throw err;
+//   }
+// };
+
 export const getMyConversations = async (req, res) => {
   try {
     const conversations = await Conversation.find({
-      $or: [{ driverId: req.user._id }, { passengerId: req.user._id }],
+      participants: req.user._id,
     })
       .sort({ lastMessageAt: -1 })
-      .populate("rideId", "from to startTime")
-      .populate("driverId", "name")
-      .populate("passengerId", "name");
+      .populate("participants", "name email")
+      .populate("relatedRideId", "from to startTime")
+      .lean();
 
-    res.json(conversations);
+    const conversationIds = conversations.map((c) => c._id);
+
+    const unreadCounts = await Message.aggregate([
+      {
+        $match: {
+          conversationId: { $in: conversationIds },
+          receiverId: req.user._id,
+          isRead: false,
+        },
+      },
+      {
+        $group: {
+          _id: "$conversationId",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const unreadMap = {};
+    unreadCounts.forEach((u) => {
+      unreadMap[u._id.toString()] = u.count;
+    });
+
+    const result = conversations.map((c) => ({
+      ...c,
+      unreadCount: unreadMap[c._id.toString()] || 0,
+    }));
+
+    res.json(result);
   } catch (err) {
     err.statusCode = 500;
     throw err;
   }
 };
 
-export const getConversationMessages = async (req, res) => {
+export const getMessages = async (req, res) => {
   try {
     const { conversationId } = req.params;
-    const page = Number(req.query.page || 1);
-    const limit = 20;
-    const skip = (page - 1) * limit;
 
     const conversation = await Conversation.findById(conversationId);
-    if (!conversation) {
-      const err = new Error("Conversation not found");
-      err.statusCode = 404;
-      throw err;
-    }
-
-    const isParticipant =
-      conversation.driverId.toString() === req.user._id.toString() ||
-      conversation.passengerId.toString() === req.user._id.toString();
-
-    if (!isParticipant) {
-      const err = new Error("Unauthorized access");
+    if (!conversation || !conversation.participants.includes(req.user._id)) {
+      const err = new Error("Conversation not accessible");
       err.statusCode = 403;
       throw err;
     }
 
-    const messages = await Message.find({ conversationId })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
+    const messages = await Message.find({ conversationId }).sort({
+      createdAt: 1,
+    });
 
-    res.json(messages.reverse());
+    res.json(messages);
+  } catch (err) {
+    err.statusCode = err.statusCode || 500;
+    throw err;
+  }
+};
+
+export const markConversationAsRead = async (req, res) => {
+  try {
+    const { conversationId } = req.params;
+
+    const conversation = await Conversation.findById(conversationId);
+    if (!conversation || !conversation.participants.includes(req.user._id)) {
+      const err = new Error("Conversation not accessible");
+      err.statusCode = 403;
+      throw err;
+    }
+
+    await Message.updateMany(
+      {
+        conversationId,
+        receiverId: req.user._id,
+        isRead: false,
+      },
+      { $set: { isRead: true } },
+    );
+
+    res.json({ success: true });
   } catch (err) {
     err.statusCode = err.statusCode || 500;
     throw err;

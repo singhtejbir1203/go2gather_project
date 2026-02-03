@@ -24,7 +24,11 @@ function PublishRideCheck() {
   }, []);
 
   if (loading) {
-    return <Spinner />;
+    return (
+      <div class="flex items-center justify-center h-screen">
+        <Spinner />
+      </div>
+    );
   }
 
   if (

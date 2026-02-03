@@ -2,41 +2,32 @@ import mongoose from "mongoose";
 
 const conversationSchema = new mongoose.Schema(
   {
-    rideId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Ride",
-      required: true,
-      index: true,
-    },
-
-    driverId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-
-    passengerId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
+    participants: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
+    ],
 
     lastMessage: {
       type: String,
+      default: "",
     },
 
     lastMessageAt: {
       type: Date,
     },
 
-    isActive: {
-      type: Boolean,
-      default: true,
+    relatedRideId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Ride",
+      default: null,
     },
   },
   { timestamps: true },
 );
 
-conversationSchema.index({ rideId: 1, passengerId: 1 }, { unique: true });
+conversationSchema.index({ participants: 1 });
 
 export default mongoose.model("Conversation", conversationSchema);

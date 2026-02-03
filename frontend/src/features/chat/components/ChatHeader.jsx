@@ -1,7 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-function ChatHeader() {
+function ChatHeader({ userName }) {
   const navigate = useNavigate();
 
   return (
@@ -11,10 +11,10 @@ function ChatHeader() {
       </button>
 
       <div>
-        <h2 className="font-semibold">Chat with Driver</h2>
-        <p className="text-sm text-gray-500">
+        <h2 className="text-2xl font-bold">{userName}</h2>
+        {/* <p className="text-sm text-gray-500">
           Ask about pickup, luggage, timing
-        </p>
+        </p> */}
       </div>
     </div>
   );

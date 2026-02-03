@@ -74,6 +74,9 @@ function Navbar() {
                     <Link to="/profile">Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
+                    <Link to="/chats">Inbox</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link to="/my-rides">Your rides</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout}>

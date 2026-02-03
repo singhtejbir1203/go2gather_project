@@ -29,7 +29,7 @@ function ApprovedVehicleCard({ vehicle, onSelect }) {
             Approved
           </div>
           <img
-            src={`http://localhost:5000${vehicleType.imageUrl}`}
+            src={vehicleType.imageUrl}
             alt={vehicleType.displayName}
             className="h-20 w-28 object-contain opacity-90"
           />

@@ -352,8 +352,12 @@ export const getRideDetails = async (req, res) => {
       return res.status(404).json({ message: "Ride not found" });
     }
 
-    const seats = await RideSeat.find({ rideId: ride._id }).populate(
-      "seatTemplateId",
+    const seats = await RideSeat.find({ rideId: ride._id })
+      .populate("seatTemplateId")
+      .populate("bookedBy");
+
+    const bookings = await Booking.find({ rideId: ride._id }).populate(
+      "userId",
     );
 
     const platformFeePercent = await getPlatformFeePercent();
@@ -363,6 +367,7 @@ export const getRideDetails = async (req, res) => {
       rideId: ride._id,
 
       driver: {
+        _id: ride.driverId._id,
         name: ride.driverId.name,
         ratingAvg: ride.driverId.ratingAvg,
         ratingCount: ride.driverId.ratingCount,
@@ -392,6 +397,13 @@ export const getRideDetails = async (req, res) => {
         label: s.seatTemplateId.label,
         isBooked: s.isBooked,
       })),
+
+      passengers: bookings
+        ? bookings.map((b) => ({
+            _id: b.userId._id,
+            name: b.userId.name,
+          }))
+        : [],
     });
   } catch (error) {
     res.status(500).json({ message: error.message });

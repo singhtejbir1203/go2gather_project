@@ -1,5 +1,9 @@
+import { useSelector } from "react-redux";
+import { formatMessageTime } from "../utils/formatMessageTime";
+
 function MessageBubble({ message }) {
-  const isMe = message.sender === "me";
+  const { user } = useSelector((s) => s.auth);
+  const isMe = message.senderId === user._id;
 
   return (
     <div className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
@@ -9,6 +13,12 @@ function MessageBubble({ message }) {
         }`}
       >
         {message.text}
+        <div
+          className={`text-[10px] mt-1 text-right
+          ${isMe ? "text-gray-200" : "text-gray-500"}`}
+        >
+          {formatMessageTime(message.createdAt)}
+        </div>
       </div>
     </div>
   );

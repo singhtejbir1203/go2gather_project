@@ -18,7 +18,9 @@ import StripeOnboardingSuccess from "@/pages/StripeOnboardingSuccess";
 import MyRides from "@/pages/MyRides";
 import MyRideDetails from "@/pages/MyRideDetails";
 import MyPublicationDetails from "@/features/rides/pages/MyPublicationDetails";
-import ChatPage from "@/features/chat/pages/ChatPage";
+// import ChatPage from "@/features/chat/pages/ChatPage";
+import ChatsPage from "@/features/chat/pages/ChatsPage";
+import ChatWindowPage from "@/features/chat/pages/ChatWindowPage";
 
 function AppRoutes() {
   return (
@@ -162,12 +164,42 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/chat/:conversationId"
           element={
             <ProtectedRoute>
               <MainLayout>
                 <ChatPage />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        /> */}
+        <Route
+          path="/chats"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <ChatsPage />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/chats/:conversationId/:user"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <ChatWindowPage />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/chats/new/:userId"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <ChatWindowPage />
               </MainLayout>
             </ProtectedRoute>
           }

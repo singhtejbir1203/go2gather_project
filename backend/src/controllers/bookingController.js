@@ -260,7 +260,7 @@ export const getBookingDetails = async (req, res) => {
     }).populate({
       path: "rideId",
       populate: [
-        { path: "driverId", select: "name ratingAvg ratingCount" },
+        { path: "driverId", select: "_id name ratingAvg ratingCount" },
         {
           path: "userVehicleId",
           populate: {
@@ -281,7 +281,9 @@ export const getBookingDetails = async (req, res) => {
 
     const seats = await RideSeat.find({
       bookingId: booking._id,
-    }).populate("seatTemplateId");
+    })
+      .populate("seatTemplateId")
+      .populate("bookedBy");
 
     const vehicleModel = ride.userVehicleId.modelId;
     const vehicleBrand = vehicleModel.brandId;
@@ -307,6 +309,7 @@ export const getBookingDetails = async (req, res) => {
         durationMin: ride.durationMin,
       },
       driver: {
+        _id: ride.driverId._id,
         name: ride.driverId.name,
         ratingAvg: ride.driverId.ratingAvg,
         ratingCount: ride.driverId.ratingCount,
@@ -318,6 +321,10 @@ export const getBookingDetails = async (req, res) => {
       seats: seats.map((s) => ({
         seatCode: s.seatTemplateId.code,
         label: s.seatTemplateId.label,
+      })),
+      passengers: seats.map((s) => ({
+        _id: s.bookedBy?._id,
+        name: s.bookedBy.name,
       })),
       actions: {
         canCancel: isFutureRide && booking.status === "confirmed",
