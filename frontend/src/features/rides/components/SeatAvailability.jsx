@@ -80,7 +80,7 @@ function SeatAvailability({ ride }) {
               rideId: ride.rideId,
               seatIds: selectedSeats,
             });
-            navigate(`/booking-success/${res2.bookingId}`);
+            navigate(`/booking-success/${res2.bookingId}/${res2.qrToken}`);
           }}
         />
       </>
@@ -110,7 +110,13 @@ function SeatAvailability({ ride }) {
                 }
               `}
             >
-              {seat.label}
+              {/* {seat.label} */}
+              <div className="font-medium">{seat.label}</div>
+              {seat.isBooked && (
+                <div className="text-xs text-gray-600 mt-1">
+                  Booked by <a>{seat.bookedBy.name}</a>
+                </div>
+              )}
             </button>
           );
         })}

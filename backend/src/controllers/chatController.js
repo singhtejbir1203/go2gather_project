@@ -1,6 +1,7 @@
 import Conversation from "../models/Conversation.js";
 import User from "../models/User.js";
 import Message from "../models/Message.js";
+import { getIO } from "../socket/index.js";
 
 export const getOrCreateConversation = async (req, res) => {
   try {
@@ -76,6 +77,13 @@ export const sendMessage = async (req, res) => {
     conversation.lastMessage = text;
     conversation.lastMessageAt = new Date();
     await conversation.save();
+
+    getIO().to(conversationId.toString()).emit("new_message", message);
+
+    getIO().to(receiverId.toString()).emit("inbox_unread_update", {
+      conversationId,
+      message,
+    });
 
     res.status(201).json(message);
   } catch (err) {

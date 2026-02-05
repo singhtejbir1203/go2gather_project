@@ -10,7 +10,7 @@ function PublicationSummary({ ride, vehicle }) {
       className="cursor-pointer bg-white rounded-lg shadow-sm p-5 hover:shadow-md transition"
     >
       <div className="flex justify-between items-start">
-        <div className="space-y-2">
+        <div className="space-y-4">
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <Calendar size={16} />
             <span>

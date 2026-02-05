@@ -1,12 +1,13 @@
 import RidePersonCard from "./RidePersonCard";
 
 function RidePeopleSection({ driver, passengers }) {
+  if (!driver && passengers.length < 1) return null;
   return (
     <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
       <h2 className="text-lg font-semibold">People on this ride</h2>
 
       {/* Driver */}
-      <RidePersonCard userData={driver} role="Driver" />
+      {driver && <RidePersonCard userData={driver} role="Driver" />}
 
       {/* Passengers */}
       {passengers.length > 0 && (

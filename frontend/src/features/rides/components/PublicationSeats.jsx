@@ -1,3 +1,6 @@
+import { User } from "lucide-react";
+import { Link } from "react-router-dom";
+
 function PublicationSeats({ seats }) {
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
@@ -15,10 +18,19 @@ function PublicationSeats({ seats }) {
           >
             <div className="font-medium">{seat.label}</div>
 
-            {seat.isBooked && (
-              <div className="text-xs text-gray-600 mt-1">
-                Booked by {seat.bookedBy.name}
+            {seat.isBooked ? (
+              <div className="flex items-center gap-2 text-xs text-gray-600 mt-1">
+                Booked by{" "}
+                <Link
+                  to={`/users/${seat.bookedBy._id}`}
+                  className="flex items-center font-bold text-sm"
+                >
+                  <User size={18} />
+                  {seat.bookedBy.name}
+                </Link>
               </div>
+            ) : (
+              <div className="text-xs text-gray-600 mt-1">Vacant</div>
             )}
           </div>
         ))}

@@ -3,10 +3,12 @@ import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/services/api";
+import { QRCodeCanvas } from "qrcode.react";
 
 function BookingSuccess() {
   const navigate = useNavigate();
-  const { bookingId } = useParams();
+  const { bookingId, token } = useParams();
+  const qrUrl = `${window.location.origin}/qr/${token}`;
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["booking-details", bookingId],
@@ -38,9 +40,21 @@ function BookingSuccess() {
   return (
     <div className="min-h-screen bg-green-600 flex items-center justify-center px-4">
       <div className="bg-white rounded-xl p-8 max-w-md w-full space-y-6 shadow-xl">
-        <CheckCircle className="h-14 w-14 text-green-600 mx-auto" />
+        <div className="flex items-center justify-between gap-6">
+          <div className="text-left space-y-2">
+            <CheckCircle className="h-14 w-14 text-green-600" />
 
-        <h1 className="text-2xl font-bold text-center">Booking Confirmed!</h1>
+            <h1 className="text-2xl font-bold">Booking Confirmed!</h1>
+          </div>
+          <div>
+            <div className="flex-shrink-0">
+              <QRCodeCanvas value={qrUrl} size={140} />
+            </div>
+            {/* <p className="text-gray-600 text-xs text-right">
+              Scan the QR code to <br /> view booking details
+            </p> */}
+          </div>
+        </div>
 
         <div className="text-sm text-gray-700 space-y-2">
           <div className="flex justify-between">

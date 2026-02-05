@@ -28,24 +28,24 @@ function MyRideDetails() {
         <h2 className="text-4xl text-[#054752] text-center font-semibold">
           Ride Details
         </h2>
-        <div className="max-w-6xl mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="md:col-span-2 space-y-6">
-              <BookingSummary data={data} />
-              <BookingSeats seats={data.seats} />
-              <BookingActions
-                bookingId={data.booking.bookingId}
-                canCancel={data.actions.canCancel}
-                totalAmount={data.booking.totalAmount}
-              />
-            </div>
-            <div className="md:col-span-1">
-              <RidePeopleSection
-                driver={data.driver}
-                passengers={data.passengers}
-              />
-            </div>
-          </div>
+        <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
+          {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="md:col-span-2 space-y-6"> */}
+          <BookingSummary data={data} />
+          <BookingSeats seats={data.seats} />
+          <BookingActions
+            bookingId={data.booking.bookingId}
+            canCancel={data.actions.canCancel}
+            totalAmount={data.booking.totalAmount}
+          />
+          {/* </div> */}
+          {/* <div className="md:col-span-1"> */}
+          {/* <RidePeopleSection
+            driver={data.driver}
+            passengers={data.passengers}
+          /> */}
+          {/* </div> */}
+          {/* </div> */}
         </div>
       </div>
     </>

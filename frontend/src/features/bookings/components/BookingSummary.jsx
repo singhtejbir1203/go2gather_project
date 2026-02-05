@@ -1,12 +1,14 @@
 import { Calendar, MapPin, User, Car } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 function BookingSummary({ data }) {
   const { ride, driver, vehicle, booking } = data;
+  const navigate = useNavigate();
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
       <div className="flex justify-between space-y-4">
-        <div>
+        <div className="space-y-6">
           <div className="flex items-center gap-2 text-gray-600">
             <Calendar size={18} />
             <span>
@@ -26,11 +28,15 @@ function BookingSummary({ data }) {
               </div>
             </div>
           </div>
-
-          <div className="flex items-center gap-3 text-sm text-gray-600">
-            <User size={16} />
+          <button
+            className="flex items-center gap-3 text-sm font-bold text-gray-600 hover:text-blue-600"
+            onClick={() => {
+              navigate(`/users/${driver._id}`);
+            }}
+          >
+            <User size={18} />
             {driver.name} ({driver.ratingAvg.toFixed(1)}★)
-          </div>
+          </button>
 
           <div className="flex items-center gap-3 text-sm text-gray-600">
             <Car size={16} />

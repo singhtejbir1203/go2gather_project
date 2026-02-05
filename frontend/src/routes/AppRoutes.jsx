@@ -21,6 +21,8 @@ import MyPublicationDetails from "@/features/rides/pages/MyPublicationDetails";
 // import ChatPage from "@/features/chat/pages/ChatPage";
 import ChatsPage from "@/features/chat/pages/ChatsPage";
 import ChatWindowPage from "@/features/chat/pages/ChatWindowPage";
+import UserProfile from "@/pages/UserProfile";
+import QrResolver from "@/pages/QrResolver";
 
 function AppRoutes() {
   return (
@@ -122,7 +124,7 @@ function AppRoutes() {
           }
         />
         <Route
-          path="/booking-success/:bookingId"
+          path="/booking-success/:bookingId/:token"
           element={<BookingSuccess />}
         />
         <Route
@@ -202,6 +204,25 @@ function AppRoutes() {
                 <ChatWindowPage />
               </MainLayout>
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/users/:userId"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <UserProfile />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/qr/:token"
+          element={
+            <MainLayout>
+              <QrResolver />
+              <Footer />
+            </MainLayout>
           }
         />
       </Routes>

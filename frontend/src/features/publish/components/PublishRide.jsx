@@ -18,7 +18,7 @@ function PublishRide() {
   const [routeData, setRouteData] = useState(null);
   const [scheduleAndSeats, setScheduleAndSeats] = useState(null);
   const [isPublished, setIsPublished] = useState(false);
-  const [publishedRideId, setPublishedRideId] = useState(null);
+  const [rideDetail, setrideDetail] = useState(null);
 
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -36,7 +36,9 @@ function PublishRide() {
   };
 
   if (isPublished) {
-    return <PublishSuccess rideId={publishedRideId} />;
+    return (
+      <PublishSuccess rideId={rideDetail.rideId} token={rideDetail.qrToken} />
+    );
   }
 
   return (
@@ -46,8 +48,7 @@ function PublishRide() {
           onClick={handleBack}
           className="flex items-center gap-2 text-gray-700 hover:text-primary transition"
         >
-          <ArrowLeft size={18} />
-          Back
+          <ArrowLeft size={20} />
         </button>
 
         <div className="max-w-5xl mx-auto px-4">
@@ -96,7 +97,8 @@ function PublishRide() {
                     availableSeats: scheduleAndSeats.seats,
                   };
                   const res = await api.post("/rides", payload);
-                  setPublishedRideId(res.data.rideId);
+                  setrideDetail(res.data);
+                  console.log(rideDetail.qrToken);
                   setIsPublished(true);
                 } catch (err) {
                   const message =

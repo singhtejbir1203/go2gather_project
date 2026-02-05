@@ -1,9 +1,9 @@
 import express from "express";
 import protect from "../middlewares/authMiddleware.js";
-import { getPublicUserProfile } from "../controllers/userController.js";
+import { resolveQr } from "../controllers/qrController.js";
 
 const router = express.Router();
 
-router.get("/profile/:userId", protect, getPublicUserProfile);
+router.get("/:token", protect, resolveQr);
 
 export default router;

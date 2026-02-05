@@ -2,8 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { CheckCircle, MapPin, Clock, IndianRupee } from "lucide-react";
 import { fetchRideDetails } from "../services/rideApi";
 import Footer from "@/components/layout/Footer";
+import { QRCodeCanvas } from "qrcode.react";
 
-function PublishSuccess({ rideId }) {
+function PublishSuccess({ rideId, token }) {
+  const qrUrl = `${window.location.origin}/qr/${token}`;
   const { data: ride, isLoading } = useQuery({
     queryKey: ["ride-details", rideId],
     queryFn: () => fetchRideDetails(rideId),
@@ -23,12 +25,20 @@ function PublishSuccess({ rideId }) {
       <div className="min-h-screen bg-green-600 flex items-center justify-center px-4">
         <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-8 text-gray-800">
           {/* Header */}
-          <div className="text-center space-y-3">
-            <CheckCircle size={64} className="text-green-600 mx-auto" />
-            <h1 className="text-2xl font-bold">Ride Published Successfully</h1>
-            <p className="text-gray-600">
-              Your ride is now visible to passengers
-            </p>
+          <div className="flex items-center justify-between gap-6">
+            <div className="text-left space-y-2">
+              <CheckCircle size={48} className="text-green-600" />
+              <h1 className="text-2xl font-bold">
+                Ride Published Successfully
+              </h1>
+              <p className="text-gray-600">
+                Your ride is now visible to passengers
+              </p>
+            </div>
+
+            <div className="flex-shrink-0">
+              <QRCodeCanvas value={qrUrl} size={120} />
+            </div>
           </div>
 
           {/* Ride Summary */}
@@ -36,26 +46,26 @@ function PublishSuccess({ rideId }) {
             <div className="flex items-start gap-3">
               <MapPin className="text-primary mt-1" />
               <div>
-                <div className="font-semibold">{ride.from.label}</div>
-                <div className="text-sm text-gray-500">to {ride.to.label}</div>
+                <div className="font-semibold">{ride?.from.label}</div>
+                <div className="text-sm text-gray-500">to {ride?.to.label}</div>
               </div>
             </div>
 
             <div className="flex items-center gap-3">
               <Clock className="text-primary" />
               <div className="text-sm">
-                {new Date(ride.startTime).toLocaleString()} –{" "}
-                {new Date(ride.endTime).toLocaleTimeString()}
+                {new Date(ride?.startTime).toLocaleString()} –{" "}
+                {new Date(ride?.endTime).toLocaleTimeString()}
               </div>
             </div>
 
             <div className="flex items-center gap-3">
               <IndianRupee className="text-primary" />
-              <div className="text-sm">₹{ride.pricePerSeat} per seat</div>
+              <div className="text-sm">{ride?.pricePerSeat} per seat</div>
             </div>
 
             <div className="text-sm text-gray-600">
-              Distance: {ride.distanceKm} km
+              Distance: {Math.trunc(ride?.distanceKm)} km
             </div>
           </div>
 

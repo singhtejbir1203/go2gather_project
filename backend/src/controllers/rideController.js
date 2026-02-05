@@ -12,6 +12,7 @@ import Booking from "../models/Booking.js";
 import RevenueTransaction from "../models/RevenueTransaction.js";
 import stripe from "../config/stripe.js";
 import { logDbOperation } from "../utils/dbLogger.js";
+import { generateQrToken } from "../utils/qrToken.js";
 
 // @route POST /api/rides
 
@@ -165,9 +166,19 @@ export const publishRide = async (req, res) => {
       userId: req.user._id,
     });
 
+    const qrToken = generateQrToken({
+      payload: {
+        type: "RIDE",
+        rideId: ride._id,
+        userId: req.user._id,
+      },
+      expiresAt: ride.endTime,
+    });
+
     res.status(201).json({
       message: "Ride published successfully",
       rideId: ride._id,
+      qrToken,
     });
   } catch (err) {
     err.statusCode = err.statusCode || 500;
@@ -396,14 +407,14 @@ export const getRideDetails = async (req, res) => {
         seatCode: s.seatTemplateId.seatCode,
         label: s.seatTemplateId.label,
         isBooked: s.isBooked,
+        bookedBy: s.bookedBy
+          ? {
+              _id: s.bookedBy._id,
+              name: s.bookedBy.name,
+              email: s.bookedBy.email,
+            }
+          : null,
       })),
-
-      passengers: bookings
-        ? bookings.map((b) => ({
-            _id: b.userId._id,
-            name: b.userId.name,
-          }))
-        : [],
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -501,6 +512,7 @@ export const getMyPublishedRideDetails = async (req, res) => {
         isBooked: s.isBooked,
         bookedBy: s.bookedBy
           ? {
+              _id: s.bookedBy._id,
               name: s.bookedBy.name,
               email: s.bookedBy.email,
             }

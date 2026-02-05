@@ -14,26 +14,29 @@ function RideDetails() {
     queryFn: () => fetchRideDetails(rideId),
   });
 
-  if (isLoading) return <div>Loading ride...</div>;
-  if (isError) return <div>Failed to load ride</div>;
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center h-screen">
+        Loading ride...
+      </div>
+    );
+  if (isError) return;
+  <div className="flex items-center justify-center h-screen">
+    Failed to load ride
+  </div>;
 
   return (
     <>
-      {/* <div className="bg-gray-50 min-h-screen">
+      <div className="bg-gray-50 min-h-screen">
         <h2 className="text-4xl text-[#054752] text-center font-semibold">
           Ride Details
         </h2>
         <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
           <RideSummary ride={data} />
           <SeatAvailability ride={data} />
-          <RidePeopleSection
-            driver={data.driver}
-            passengers={data.passengers}
-          />
-          <MessageDriverButton rideId={rideId} driverId={data.driverId} /> 
         </div>
-      </div> */}
-      <div className="bg-gray-50 min-h-screen">
+      </div>
+      {/* <div className="bg-gray-50 min-h-screen">
         <h2 className="text-4xl text-[#054752] text-center font-semibold">
           Ride Details
         </h2>
@@ -53,7 +56,7 @@ function RideDetails() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }

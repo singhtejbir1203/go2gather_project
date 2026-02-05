@@ -4,6 +4,8 @@ import { getMyPublishedRideDetails } from "../services/rideDetailsApi";
 import PublicationSeats from "../components/PublicationSeats";
 import PublicationActions from "../components/PublicationActions";
 import PublicationSummary from "../components/PublicationSummary";
+import RidePeopleSection from "../components/RidePeopleSection";
+import BookingSeats from "@/features/bookings/components/BookingSeats";
 
 function MyPublicationDetails() {
   const { rideId } = useParams();
@@ -22,8 +24,13 @@ function MyPublicationDetails() {
         <h1 className="text-2xl font-bold">Published Ride</h1>
 
         <PublicationSummary ride={data.ride} vehicle={data.vehicle} />
-        <PublicationSeats seats={data.seats} />
+        <BookingSeats seats={data.seats} />
         <PublicationActions ride={data.ride} />
+        {/* <RidePeopleSection
+          passengers={data.seats
+            .filter((s) => s.bookedBy)
+            .map((p) => p.bookedBy)}
+        /> */}
       </div>
     </div>
   );

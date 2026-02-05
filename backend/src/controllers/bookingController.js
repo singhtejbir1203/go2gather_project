@@ -6,6 +6,7 @@ import User from "../models/User.js";
 import RevenueTransaction from "../models/RevenueTransaction.js";
 import { getPlatformFeePercent } from "../utils/platformFee.js";
 import { logDbOperation } from "../utils/dbLogger.js";
+import { generateQrToken } from "../utils/qrToken.js";
 
 export const prepareBooking = async (req, res) => {
   try {
@@ -190,9 +191,20 @@ export const confirmBooking = async (req, res) => {
       userId: req.user._id,
     });
 
+    const qrToken = generateQrToken({
+      payload: {
+        type: "BOOKING",
+        rideId,
+        bookingId: booking._id,
+        userId: req.user._id,
+      },
+      expiresAt: ride.endTime,
+    });
+
     res.status(201).json({
       message: "Booking confirmed",
       bookingId: booking._id,
+      qrToken,
     });
   } catch (err) {
     err.statusCode = err.statusCode || 500;
@@ -280,10 +292,17 @@ export const getBookingDetails = async (req, res) => {
     const ride = booking.rideId;
 
     const seats = await RideSeat.find({
-      bookingId: booking._id,
+      rideId: booking.rideId,
     })
       .populate("seatTemplateId")
-      .populate("bookedBy");
+      .populate({ path: "bookedBy", select: "_id name" });
+
+    const booked = await RideSeat.find({
+      rideId: booking.rideId,
+      isBooked: true,
+    })
+      .select("bookedBy")
+      .populate({ path: "bookedBy", select: "_id name" });
 
     const vehicleModel = ride.userVehicleId.modelId;
     const vehicleBrand = vehicleModel.brandId;
@@ -321,10 +340,8 @@ export const getBookingDetails = async (req, res) => {
       seats: seats.map((s) => ({
         seatCode: s.seatTemplateId.code,
         label: s.seatTemplateId.label,
-      })),
-      passengers: seats.map((s) => ({
-        _id: s.bookedBy?._id,
-        name: s.bookedBy.name,
+        isBooked: s.isBooked,
+        bookedBy: s.bookedBy,
       })),
       actions: {
         canCancel: isFutureRide && booking.status === "confirmed",

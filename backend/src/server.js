@@ -15,6 +15,9 @@ import { stripeWebhook } from "./controllers/stripeWebhookController.js";
 import requestLogger from "./middlewares/requestLogger.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import chatRoutes from "./routes/chatRoutes.js";
+import http from "http";
+import { initSocket } from "./socket/index.js";
+import qrRoutes from "./routes/qrRoutes.js";
 
 dotenv.config();
 
@@ -53,12 +56,23 @@ app.use("/api/stripe", stripeConnectRoutes);
 
 app.use("/api/chat", chatRoutes);
 
+app.use("/api/qr", qrRoutes);
+
 app.use(errorHandler);
 
 connectDB();
 
 // Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+const server = http.createServer(app);
+
+initSocket(server);
+
+// start listening
+server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+// app.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`);
+// });
